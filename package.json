@@ -1,0 +1,10 @@
+{
+  "name": "mii-table",
+  "version": "0.0.1",
+  "repository": "git@github.com:levmorozov/mii-table.git",
+  "author": "levmorozov <mail@levmorozov.ru>",
+  "license": "MIT",
+  "files": [
+    "assets/"
+  ]
+}

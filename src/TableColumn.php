@@ -1,9 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace mii\table;
+namespace app\components\table;
 
 use mii\db\ORM;
-use mii\util\HTML;
 
 /**
  * Class TableColumn
@@ -43,17 +42,15 @@ class TableColumn
         $this->item = $item;
     }
 
-    public function attributes(): string
+    public function attributes(): ?array
     {
         if ($this->attributes === null) {
-            return '';
+            return null;
         }
 
-        $attrs = ($this->attributes instanceof \Closure)
+        return ($this->attributes instanceof \Closure)
             ? ($this->attributes)($this->item)
             : $this->attributes;
-
-        return HTML::attributes($attrs);
     }
 
     public function value(): string
