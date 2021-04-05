@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace app\components\table;
+namespace mii\table;
 
 use mii\db\ORM;
 
