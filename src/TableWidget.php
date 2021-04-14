@@ -161,7 +161,7 @@ class TableWidget
     {
         if (empty($this->row_attributes)) {
             return [
-                'class' => "admin_table__row{$item->id}"
+                'class' => "t__row{$item->id}"
             ];
         }
 

@@ -243,7 +243,7 @@
     });
 
     core.on('table_row_delete', function (id) {
-        $('.admin_t__row' + id).remove();
+        $('.t__row' + id).remove();
     });
 
     $$('#mia_table_id' + tableId + ' .admin_t__delete_link').forEach(function (el) {
