@@ -3,6 +3,7 @@
 namespace mii\table;
 
 use mii\db\ORM;
+use mii\util\HTML;
 
 /**
  * Class TableColumn
@@ -17,6 +18,8 @@ class TableColumn
     public bool $sortBy = false;
     private bool $lock = false;
     private $attributes = null;
+
+    private $buttons = [];
 
     private $value;
 
@@ -55,6 +58,10 @@ class TableColumn
 
     public function value(): string
     {
+        if(!empty($this->buttons)) {
+            return $this->renderButtons();
+        }
+
         if ($this->value === null) {
             return (string)$this->item->get($this->name);
         }
@@ -68,6 +75,41 @@ class TableColumn
         }
 
         return '';
+    }
+
+    public function renderButtons(): string
+    {
+        $result = '';
+        $buttons = ($this->buttons instanceof \Closure) ? ($this->buttons)($this->item) : $this->buttons;
+
+        foreach($buttons as $btn) {
+
+            if(is_string($btn)) {
+                $result .= $btn;
+                continue;
+            }
+
+            $text = isset($btn['icon']) ? "<span class='i_icon i_icon-{$btn['icon']}'></span>" : '';
+
+            $uri = '#';
+            if(isset($btn['href'])) {
+                $uri = $btn['href'];
+                unset($btn['href']);
+            }
+
+            if(isset($btn['text'])) {
+                $text = $btn['text'];
+                unset($btn['text']);
+            }
+
+            $params = array_replace([
+                'class' => 'i_btn i_btn-solid',
+                'data-id' => $this->item->id
+            ], $btn);
+
+            $result .= HTML::anchor($uri, $text, $params);
+        }
+        return $result;
     }
 
 

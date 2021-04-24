@@ -55,7 +55,7 @@ class TableWidget
     /**
      * @var TableColumn[] $cols
      */
-    protected array $cols;
+    protected array $cols = [];
 
     public function __construct(SelectQuery $query, $config = [])
     {
@@ -99,11 +99,23 @@ class TableWidget
         }
     }
 
+    public function setupColumns() : array {
+        return [];
+    }
+
+    public function setupFilters() : array {
+        return [];
+    }
+
 
     public function setup($config = []): void
     {
-        if (isset($config['columns'])) {
-            $this->columns = $config['columns'];
+        if(empty($this->columns)) {
+            $this->columns = $config['columns'] ?? $this->setupColumns();
+        }
+
+        if(empty($this->filters)) {
+            $this->filters = $config['filters'] ?? $this->setupFilters();
         }
 
         if (isset($config['active_columns'])) {
@@ -219,8 +231,11 @@ class TableWidget
                 ->offset($this->pagination->getOffset())
                 ->limit($this->pagination->getLimit());
         }
+        $sortColumn = $this->sortParam('sort_column');
 
-        $this->query->orderBy([[$this->sortParam('sort_column'), $this->sortParam('dir')]]);
+        if($sortColumn) {
+            $this->query->orderBy([[$this->sortParam('sort_column'), $this->sortParam('dir')]]);
+        }
 
         if ($this->items === null) {
             $this->items = $this->query->all();
