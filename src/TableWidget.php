@@ -74,13 +74,6 @@ class TableWidget
         foreach ($this->form->fetchFilter() as $filter_data) {
             $this->applyFilter($filter_data['name'], $filter_data['value']);
         }
-
-        $this->pagination = new Pagination([
-            'total_items' => $query->count(),
-            'block' => 'table_pagination',
-            'base_uri' => $this->base_uri,
-            'items_per_page' => $this->rows_per_page
-        ]);
     }
 
 
@@ -99,12 +92,25 @@ class TableWidget
         }
     }
 
-    public function setupColumns() : array {
+    public function setupColumns() : array
+    {
         return [];
     }
 
-    public function setupFilters() : array {
+    public function setupFilters() : array
+    {
         return [];
+    }
+
+    public function setupPagination()
+    {
+        $this->pagination = new Pagination([
+            'total_items' => $this->count,
+            'block' => null,// 'table_pagination',
+            'base_class' => 'table_pagination',
+            'base_uri' => $this->base_uri,
+            'items_per_page' => $this->rows_per_page
+        ]);
     }
 
 
@@ -225,6 +231,8 @@ class TableWidget
         }
 
         $this->count = $this->query->count();
+
+        $this->setupPagination();
 
         if ($this->pagination) {
             $this->query
