@@ -42,6 +42,9 @@ class TableWidget
     public array $filters = [];
     public array $active_filters = [];
 
+    public ?string $defaultSortColumn;
+    public string $defaultSortDir;
+
     private FilterForm $form;
     private Block $block;
 
@@ -63,9 +66,8 @@ class TableWidget
 
         $this->form = new FilterForm();
 
-        // By default we sort by first column in descendant order
-        $this->form->set('sort_column', \key($this->columns));
-        $this->form->set('dir', 'desc');
+        $this->form->set('sort_column', $this->defaultSortColumn);
+        $this->form->set('dir', $this->defaultSortDir);
 
         $this->form->load($_GET);
 
@@ -77,7 +79,7 @@ class TableWidget
     }
 
 
-    private function applyFilter($name, $value): void
+    public function applyFilter($name, $value): void
     {
         if (!isset($this->filters[$name])) {
             return;
@@ -89,6 +91,16 @@ class TableWidget
             \call_user_func($this->filters[$name]['action'], $this->query, $value);
         } else {
             $this->query->andFilter($name, '=', $value);
+        }
+    }
+
+    public function setupDefaultSort($column = null, $dir = 'desc'): void
+    {
+        $this->defaultSortColumn = $column;
+        $this->defaultSortDir = $dir;
+
+        if($this->defaultSortColumn === null) {
+            $this->defaultSortColumn = \key($this->columns);
         }
     }
 
@@ -135,6 +147,8 @@ class TableWidget
         if (isset($config['row_attributes'])) {
             $this->row_attributes = $config['row_attributes'];
         }
+
+        $this->setupDefaultSort();
     }
 
     public function sortParam($name)
@@ -179,14 +193,14 @@ class TableWidget
     {
         if (empty($this->row_attributes)) {
             return [
-                'class' => "t__row{$item->id}"
+                'class' => "t__row t__row{$item->id}",
+                'data-id' => $item->id
             ];
         }
 
         return \is_callable($this->row_attributes)
             ? ($this->row_attributes)($item)
             : $this->row_attributes;
-
     }
 
     /**
@@ -207,13 +221,12 @@ class TableWidget
 
     /**
      * @param $item
-     * @return \Generator|TableColumn[]
+     * @return TableColumn[]
      */
-    public function rowColumns($item): array //\Generator
+    public function rowColumns($item): array
     {
         foreach ($this->cols as $col) {
             $col->setItem($item);
-            //  yield $col;
         }
         return $this->cols;
     }
@@ -242,12 +255,17 @@ class TableWidget
         $sortColumn = $this->sortParam('sort_column');
 
         if($sortColumn) {
-            $this->query->orderBy([[$this->sortParam('sort_column'), $this->sortParam('dir')]]);
+            $this->applySorting($this->query, $sortColumn, $this->sortParam('dir'));
         }
 
         if ($this->items === null) {
             $this->items = $this->query->all();
         }
+    }
+
+    protected function applySorting(SelectQuery $query, $column, $dir)
+    {
+        $query->orderBy([[$this->sortParam('sort_column'), $this->sortParam('dir')]]);
     }
 
 
@@ -297,7 +315,7 @@ class TableWidget
             } else {
                 $th = '<a href="' . $this->form->sortLink($column->name) . '">' . $column->title . '</a>';
                 if ($column->sortBy) {
-                    $th .= $this->form->get('dir') === 'asc' ? ' <i class="i_icon i_icon-arrow-up"></i>' : ' <i class="i_icon i_icon-arrow-down"></i>';
+                    $th .= $this->form->get('dir') === 'asc' ? ' &uarr;' : ' &darr;';
                 }
             }
 
