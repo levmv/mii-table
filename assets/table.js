@@ -93,6 +93,13 @@
                 form.submit();
             }
         })
+
+        $('.t__sel_f_value').addEventListener('click', e => {
+            if(e.target.tagName === 'SPAN' && e.target.classList.contains('t__sel_f_remove')) {
+                e.preventDefault();
+                deleteCurrentSelected();
+            }
+        })
     }
 
     function updateFiltersDropdown() {
@@ -189,6 +196,9 @@
 
         let filterInput = `<input type='hidden' name='filters[]' value='${filter.id}'>
                          <input type='text' name='values[]' class='i_form__text filter_new_value_input' value='${value}'/>`;
+        if( value) {
+            filterInput += `<span class="t__sel_f_remove"></span>`
+        }
 
         $('.t__sel_f_name').innerHTML = filter['title'];
         $('.t__sel_f_value').innerHTML = filterInput;
@@ -198,6 +208,7 @@
         } else {
             hide('.t__filter_add_button');
         }
+
 
         if (focus) {
             $('.filter_new_value_input').focus();
@@ -214,6 +225,16 @@
 
         form.submit();
     }
+
+    // Ugh! Ugly!!
+    // But all this will be rewritten completely at some point anyway
+    function deleteCurrentSelected() {
+        $$('.t__sel_f_value input').forEach(el => {
+            el.remove();
+        });
+        form.submit();
+    }
+
 
     function getCurrentFilterValue() {
         return $('.t__sel_f_value .i_form__text').value;
@@ -264,3 +285,4 @@
     new Dropdown('.t__sel_f_name');
 
 }(window.adminTable = window.adminTable || {}, core));
+
