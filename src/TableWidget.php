@@ -337,17 +337,14 @@ class TableWidget
 
         $result = $filtersData .  $form;
         $result .= HTML::tag('table', $head . $bodyContent, $this->tableAttributes());
-        $result .= $this->pagination();
-
-        /*    $block = block('table')
-                ->bind('table', $this)
-                ->set([
-                    'result' => $result,
-                    'id' => $this->id,
-                    'form' => $this->form,
-                ]);*/
+        $result .= $this->renderFooter();
 
         return $result;
+    }
+
+    public function renderFooter(): string
+    {
+        return (string) $this->pagination();
     }
 
     public function pagination(): Pagination

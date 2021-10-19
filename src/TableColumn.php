@@ -102,8 +102,14 @@ class TableColumn
                 unset($btn['text']);
             }
 
+            $class = 'i_btn i_btn-solid i_miitable__btn';
+
+            if(isset($btn['style'])) {
+                $class .= ' i_btn-'.$btn['style'];
+            }
+
             $params = array_replace([
-                'class' => 'i_btn i_btn-solid',
+                'class' => $class,
                 'data-id' => $this->item->id
             ], $btn);
 

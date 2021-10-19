@@ -267,22 +267,44 @@
         $('.t__row' + id).remove();
     });
 
-    $$('#mia_table_id' + tableId + ' .admin_t__delete_link').forEach(function (el) {
-        el.onclick = function () {
-            if (confirm('Вы уверены?')) {
-                let id = el.getAttribute('data-id');
-                core.post(el.getAttribute('data-url'), {
-                    'id': id
-                })
-                    .then(() => {
-                        core.emit('table_row_delete', [id]);
-                    });
+    let legacyDeleteBtns = $$('#mia_table_id' + tableId + ' .admin_t__delete_link');
+
+    if(legacyDeleteBtns.length) {
+        console.warn('Legacy delete buttons mechanism: please upgrade');
+        legacyDeleteBtns.forEach(function (el) {
+            el.onclick = function () {
+                core.emit('table_delete', [el.dataset.id, el.dataset]);
+                return false;
             }
-            return false;
+        });
+    }
+
+    core.on('table_delete', function(id, data) {
+        if (confirm('Вы уверены?')) {
+            core.post(data.url, {
+                'id': id
+            }).then(() => {
+                core.emit('table_row_delete', [id]);
+            });
+        }
+    });
+
+    function dispatchTableButtonClick(el) {
+        let action = el.dataset.action;
+        let id = el.dataset.id;
+        core.emit('table_'+action, [id,el.dataset]);
+    }
+
+    $('#mia_table_id'+tableId).addEventListener('click', e => {
+        if(e.target.classList.contains('i_miitable__btn')) {
+            e.stopPropagation();
+            e.preventDefault();
+            dispatchTableButtonClick(e.target);
         }
     });
 
     new Dropdown('.t__sel_f_name');
 
-}(window.adminTable = window.adminTable || {}, core));
+}(window.adminTable = window.adminTable || {}, window._core));
+
 
