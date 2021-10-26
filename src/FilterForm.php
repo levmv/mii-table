@@ -46,4 +46,10 @@ class FilterForm extends Form
             ];
         }
     }
+
+    public function rules(): array
+    {
+        return [];
+    }
+
 }
