@@ -32,7 +32,7 @@ class TableWidget
      *      'title' => Arbitrary filter name
      *      'type' => Filters type. One of const FilterForm::FILTER_TYPE_...'
      *      'value' => Filters initial (default) value. It'll be rewritten from $_GET
-     *      'data' => Source array of filter or clousure. Used for FILTER_TYPE_LIST
+     *      'data' => Source array of filter or closure. Used for FILTER_TYPE_LIST
      *      'action' => function($query, $value). Function that applies filter. Not required.
      *  ]
      * ]
@@ -47,11 +47,11 @@ class TableWidget
     private FilterForm $form;
 
     private SelectQuery $query;
-    protected ?array $items;
+    protected ?array $items = null;
     private int $count;
     protected int $rows_per_page = 50;
     private Pagination $pagination;
-    protected string $base_uri;
+    protected ?string $base_uri = null;
 
     /**
      * @var TableColumn[] $cols
@@ -149,17 +149,17 @@ class TableWidget
         $this->setupDefaultSort();
     }
 
-    public function sortParam($name)
+    public function sortParam(string $name)
     {
         return $this->form->get($name);
     }
 
-    public function items()
+    public function items(): ?array
     {
         return $this->items;
     }
 
-    public function totalCount()
+    public function totalCount(): int
     {
         return $this->count;
     }
