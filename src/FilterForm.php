@@ -30,7 +30,7 @@ class FilterForm extends Form
         return $search_columns;
     }
 
-    public function sortLink($column)
+    public function sortLink(string $column): string
     {
         $dir = $this->get('dir') === 'asc' ? 'desc' : 'asc';
         return Url::query(['sort_column' => $column, 'dir' => $dir], true);

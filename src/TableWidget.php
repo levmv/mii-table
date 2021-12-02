@@ -6,7 +6,6 @@ use mii\db\ORM;
 use mii\db\SelectQuery;
 use mii\util\Arr;
 use mii\util\HTML;
-use mii\web\Block;
 use mii\web\Pagination;
 
 /**
@@ -46,14 +45,13 @@ class TableWidget
     public string $defaultSortDir;
 
     private FilterForm $form;
-    private Block $block;
 
     private SelectQuery $query;
-    protected $items;
-    private $count;
+    protected ?array $items;
+    private int $count;
     protected int $rows_per_page = 50;
-    private $pagination;
-    protected $base_uri;
+    private Pagination $pagination;
+    protected string $base_uri;
 
     /**
      * @var TableColumn[] $cols
@@ -204,7 +202,6 @@ class TableWidget
     }
 
     /**
-     * @param $item
      * @return \Generator|TableColumn[]
      */
     public function headColumns(): \Generator
@@ -278,7 +275,7 @@ class TableWidget
             'active' => $this->active_filters
         ], \mii\util\Text::JSON_FLAGS);
 
-        $filtersData = "<script type=\"application/json\" id=\"filters_data\" data-id=\"{$this->id}\">$filters</script>";
+        $filtersData = "<script type=\"application/json\" id=\"filters_data\" data-id=\"$this->id\">$filters</script>";
 
         $filtersSceleton = <<<EOF
             <div class="t__h">

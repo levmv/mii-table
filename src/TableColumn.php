@@ -17,9 +17,9 @@ class TableColumn
     public bool $sort = true;
     public bool $sortBy = false;
     private bool $lock = false;
-    private $attributes = null;
+    private ?array $attributes = null;
 
-    private $buttons = [];
+    private array $buttons = [];
 
     private $value;
 
@@ -32,12 +32,6 @@ class TableColumn
         foreach ($config as $key => $value) {
             $this->$key = $value;
         }
-        /*    $defaults = [
-                'title' => '',
-                'sort' => false,
-                'lock' => false,
-                'value' => null
-            ];*/
     }
 
     public function setItem(ORM $item): void
@@ -63,7 +57,7 @@ class TableColumn
         }
 
         if ($this->value === null) {
-            return (string)$this->item->get($this->name);
+            return e((string)$this->item->get($this->name));
         }
 
         if ($this->value instanceof \Closure) {
@@ -71,7 +65,7 @@ class TableColumn
         }
 
         if (is_string($this->value)) {
-            return (string)$this->item->get($this->value);
+            return e((string)$this->item->get($this->value));
         }
 
         return '';
