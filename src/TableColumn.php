@@ -17,7 +17,7 @@ class TableColumn
     public bool $sort = true;
     public bool $sortBy = false;
     private bool $lock = false;
-    private ?array $attributes = null;
+    private mixed $attributes = null;
 
     private array $buttons = [];
 
