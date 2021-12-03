@@ -19,7 +19,7 @@ class TableColumn
     private bool $lock = false;
     private mixed $attributes = null;
 
-    private array $buttons = [];
+    private mixed $buttons = [];
 
     private $value;
 

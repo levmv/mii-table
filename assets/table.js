@@ -297,9 +297,13 @@
 
     $('#mia_table_id'+tableId).addEventListener('click', e => {
         if(e.target.classList.contains('i_miitable__btn')) {
-            e.stopPropagation();
-            e.preventDefault();
-            dispatchTableButtonClick(e.target);
+            let btn = e.target;
+
+            if(btn.getAttribute('href') === '#') {
+                e.stopPropagation();
+                e.preventDefault();
+            }
+            dispatchTableButtonClick(btn);
         }
     });
 
