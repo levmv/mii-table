@@ -95,7 +95,7 @@
         })
 
         $('.t__sel_f_value').addEventListener('click', e => {
-            if(e.target.tagName === 'SPAN' && e.target.classList.contains('t__sel_f_remove')) {
+            if (e.target.tagName === 'SPAN' && e.target.classList.contains('t__sel_f_remove')) {
                 e.preventDefault();
                 deleteCurrentSelected();
             }
@@ -196,7 +196,7 @@
 
         let filterInput = `<input type='hidden' name='filters[]' value='${filter.id}'>
                          <input type='text' name='values[]' class='i_form__text filter_new_value_input' value='${value}'/>`;
-        if( value) {
+        if (value) {
             filterInput += `<span class="t__sel_f_remove"></span>`
         }
 
@@ -269,7 +269,7 @@
 
     let legacyDeleteBtns = $$('#mia_table_id' + tableId + ' .admin_t__delete_link');
 
-    if(legacyDeleteBtns.length) {
+    if (legacyDeleteBtns.length) {
         console.warn('Legacy delete buttons mechanism: please upgrade');
         legacyDeleteBtns.forEach(function (el) {
             el.onclick = function () {
@@ -279,7 +279,7 @@
         });
     }
 
-    core.on('table_delete', function(id, data) {
+    core.on('table_delete', function (id, data) {
         if (confirm('Вы уверены?')) {
             core.post(data.url, {
                 'id': id
@@ -292,14 +292,14 @@
     function dispatchTableButtonClick(el) {
         let action = el.dataset.action;
         let id = el.dataset.id;
-        core.emit('table_'+action, [id,el.dataset]);
+        core.emit('table_' + action, [id, el.dataset]);
     }
 
-    $('#mia_table_id'+tableId).addEventListener('click', e => {
-        if(e.target.classList.contains('i_miitable__btn')) {
+    $('#mia_table_id' + tableId).addEventListener('click', e => {
+        if (e.target.classList.contains('i_miitable__btn')) {
             let btn = e.target;
 
-            if(btn.getAttribute('href') === '#') {
+            if (btn.getAttribute('href') === '#') {
                 e.stopPropagation();
                 e.preventDefault();
             }
