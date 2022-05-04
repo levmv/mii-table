@@ -31,6 +31,8 @@
 
 .t__sel_f_value {
     position: relative;
+    flex-shrink: 0;
+    min-width:100px;
 }
 
 .t__sel_f_value .i_form__text {

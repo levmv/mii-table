@@ -288,7 +288,7 @@ class TableWidget
                             <button class="i_btn t__filter_button"><span></span></button>
                             <a href="#" class="i_btn t__filter_add_button" style="display: none"
                                title="Добавить еще один фильтр">
-                                <i class="i_icon i_icon-plus"></i>
+                                <i class="i_icon i_icon-add"></i>
                             </a>
                         </div>
                         <div class="dropdown dropdown-relative" id="t__h_filters_list"></div>

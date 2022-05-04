@@ -144,8 +144,9 @@
 
             let filter = filters[id];
 
-            if (filter['type'] === FILTER_TYPE_LIST && filter['list']) {
-                filter['visible_value'] = filter['list'][filter['value']];
+            if (filter['type'] === FILTER_TYPE_LIST && filter['values']) {
+                //filter['visible_value'] = filter['list'][filter['value']];
+                filter['visible_value'] = findFilterNameByValue(filter['value'], filter);
             }
             result += selectedFilterTpl(filter);
         }
@@ -155,8 +156,8 @@
 
     function addFilterToSelected(id) {
         let filter = filters[id];
-        if (filter['type'] === FILTER_TYPE_LIST && filter['list']) {
-            filter['visible_value'] = filter['list'][filter['value']];
+        if (filter['type'] === FILTER_TYPE_LIST && filter['values']) {
+            filter['visible_value'] = findFilterNameByValue(filter['value'], filter);
         }
         $('.t__h_filters_selected').insertAdjacentHTML('beforeend', selectedFilterTpl(filter));
 
@@ -193,9 +194,13 @@
 
         if (!value)
             value = '';
+        let filterInput = `<input type='hidden' name='filters[]' value='${filter.id}'>`;
+        if(filter['type'] === FILTER_TYPE_LIST) {
+            filterInput += `<div class="filter_new_value_sel" style="min-width: 180px"></div><input type='hidden' name='values[]' class='i_form__text filter_new_value_input' value='${value}'/>`;
+        } else {
+            filterInput += `<input type='text' name='values[]' class='i_form__text filter_new_value_input' value='${value}'/>`;
+        }
 
-        let filterInput = `<input type='hidden' name='filters[]' value='${filter.id}'>
-                         <input type='text' name='values[]' class='i_form__text filter_new_value_input' value='${value}'/>`;
         if (value) {
             filterInput += `<span class="t__sel_f_remove"></span>`
         }
@@ -209,6 +214,33 @@
             hide('.t__filter_add_button');
         }
 
+        if(filter['type'] === FILTER_TYPE_LIST) {
+
+
+            let filterSel = new Sel('.filter_new_value_sel', {
+                source: () => filter['values'],
+                filter: false,
+                onSelect: id => {
+                    $('.t__sel_f_value .i_form__text').value = id;
+                    applyCurrentFilter();
+                },
+                search: false,
+                sorter: data => data,
+            });
+
+            let name = findFilterNameByValue(filter['value'], filter);
+            filterSel.current(filter['value'], name);/*
+            for(let i in filter['values']) {
+
+                if(filter['values'][i].id == filter['value']) {
+
+                    filterSel.current(filter['value'], filter['values'][i].name);
+                }
+            }
+*/
+
+
+        }
 
         if (focus) {
             $('.filter_new_value_input').focus();
@@ -225,6 +257,16 @@
 
         form.submit();
     }
+
+
+    function findFilterNameByValue(value, filter) {
+        for(let i in filter['values']) {
+            if (filter['values'][i].id == value) {
+                return filter['values'][i].name;
+            }
+        }
+    }
+
 
     // Ugh! Ugly!!
     // But all this will be rewritten completely at some point anyway
